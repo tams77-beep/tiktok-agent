@@ -15,12 +15,12 @@ def load_model():
 
 model = load_model()
 
-url = st.text_input("Colle ici ton lien YouTube :")
+youtube_url = st.text_input("Colle ici ton lien YouTube :")
 
-if url:
+if youtube_url:
     try:
-        yt = YouTube(url)
-        st.video(url)
+        yt = YouTube(youtube_url)
+        st.video(youtube_url)
 
         if st.button("Télécharger et analyser"):
             with st.spinner("Téléchargement en cours..."):
