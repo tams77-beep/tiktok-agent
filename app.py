@@ -1,7 +1,7 @@
 import streamlit as st
 from pytube import YouTube
 import whisper
-from gtts import gTTS
+import pyttsx3
 import uuid
 import os
 
@@ -30,21 +30,21 @@ if youtube_url:
                 text = result["text"].strip()
 
             if not text:
-                st.warning("⚠️ La transcription est vide. Veuillez essayer une autre vidéo.")
+                st.warning("⚠️ La transcription est vide.")
             else:
                 st.success("✅ Transcription terminée !")
                 st.text_area("📝 Transcription complète :", text, height=200)
 
                 extrait_voix = text.replace('\n', ' ')[:300]
 
-                with st.spinner("🔊 Génération de la voix..."):
-                    tts = gTTS(extrait_voix, lang="fr")
-                    tts_path = f"tts_{uuid.uuid4()}.mp3"
-                    tts.save(tts_path)
+                # Synthèse vocale offline
+                tts_engine = pyttsx3.init()
+                tts_path = f"tts_{uuid.uuid4()}.mp3"
+                tts_engine.save_to_file(extrait_voix, tts_path)
+                tts_engine.runAndWait()
 
                 st.audio(tts_path, format='audio/mp3')
 
-                # Nettoyage des fichiers
                 os.remove(audio_path)
                 os.remove(tts_path)
 
