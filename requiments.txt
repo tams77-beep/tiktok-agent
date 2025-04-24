@@ -1,5 +1,5 @@
 streamlit
-pytube
+pytube==12.1.0
 openai-whisper
 moviepy
 gTTS
