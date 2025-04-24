@@ -1,6 +1,0 @@
-streamlit
-pytube==12.1.0
-openai-whisper
-moviepy
-gTTS
-torch
