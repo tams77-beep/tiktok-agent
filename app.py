@@ -27,9 +27,15 @@ if youtube_url:
                 audio_file = f"audio_{uuid.uuid4()}.mp4"
                 audio_path = video.download(filename=audio_file)
 
-            with st.spinner("🧠 Transcription avec Whisper..."):
-                result = model.transcribe(audio_path)
-                text = result["text"]
+            # Garder un extrait raisonnable pour gTTS (ex : 300 caractères)
+extrait_voix = text.strip().replace('\n', ' ')[:300]
+
+with st.spinner("🔊 Génération de la voix..."):
+    tts = gTTS(extrait_voix, lang="fr")
+    tts_path = f"tts_{uuid.uuid4()}.mp3"
+    tts.save(tts_path)
+
+st.audio(tts_path, format='audio/mp3')
 
             st.success("✅ Transcription terminée !")
             st.text_area("📝 Transcription complète :", text, height=200)
