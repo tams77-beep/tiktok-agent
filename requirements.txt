@@ -1,5 +1,0 @@
-streamlit
-pytube
-openai-whisper
-gtts
-moviepy
