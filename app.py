@@ -27,24 +27,26 @@ if youtube_url:
 
             with st.spinner("🧠 Transcription avec Whisper..."):
                 result = model.transcribe(audio_path)
-                text = result["text"]
+                text = result["text"].strip()
 
-            st.success("✅ Transcription terminée !")
-            st.text_area("📝 Transcription complète :", text, height=200)
+            if not text:
+                st.warning("⚠️ La transcription est vide. Veuillez essayer une autre vidéo.")
+            else:
+                st.success("✅ Transcription terminée !")
+                st.text_area("📝 Transcription complète :", text, height=200)
 
-            # Garder un extrait raisonnable pour gTTS (ex : 300 caractères)
-            extrait_voix = text.strip().replace('\n', ' ')[:300]
+                extrait_voix = text.replace('\n', ' ')[:300]
 
-            with st.spinner("🔊 Génération de la voix..."):
-                tts = gTTS(extrait_voix, lang="fr")
-                tts_path = f"tts_{uuid.uuid4()}.mp3"
-                tts.save(tts_path)
+                with st.spinner("🔊 Génération de la voix..."):
+                    tts = gTTS(extrait_voix, lang="fr")
+                    tts_path = f"tts_{uuid.uuid4()}.mp3"
+                    tts.save(tts_path)
 
-            st.audio(tts_path, format='audio/mp3')
+                st.audio(tts_path, format='audio/mp3')
 
-            # Nettoyage des fichiers
-            os.remove(audio_path)
-            os.remove(tts_path)
+                # Nettoyage des fichiers
+                os.remove(audio_path)
+                os.remove(tts_path)
 
         except Exception as e:
             st.error(f"❌ Erreur : {str(e)}")
