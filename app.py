@@ -4,8 +4,6 @@ import whisper
 from gtts import gTTS
 import uuid
 import os
-from pydub import AudioSegment
-from pydub.playback import play
 
 st.set_page_config(page_title="TikTok Agent IA", layout="centered")
 st.title("🎬 Générateur TikTok IA à partir de YouTube")
@@ -27,21 +25,18 @@ if youtube_url:
                 audio_file = f"audio_{uuid.uuid4()}.mp4"
                 audio_path = video.download(filename=audio_file)
 
-            # Garder un extrait raisonnable pour gTTS (ex : 300 caractères)
-extrait_voix = text.strip().replace('\n', ' ')[:300]
-
-with st.spinner("🔊 Génération de la voix..."):
-    tts = gTTS(extrait_voix, lang="fr")
-    tts_path = f"tts_{uuid.uuid4()}.mp3"
-    tts.save(tts_path)
-
-st.audio(tts_path, format='audio/mp3')
+            with st.spinner("🧠 Transcription avec Whisper..."):
+                result = model.transcribe(audio_path)
+                text = result["text"]
 
             st.success("✅ Transcription terminée !")
             st.text_area("📝 Transcription complète :", text, height=200)
 
+            # Garder un extrait raisonnable pour gTTS (ex : 300 caractères)
+            extrait_voix = text.strip().replace('\n', ' ')[:300]
+
             with st.spinner("🔊 Génération de la voix..."):
-                tts = gTTS(text[:500], lang="fr")  # max 500 caractères pour gTTS
+                tts = gTTS(extrait_voix, lang="fr")
                 tts_path = f"tts_{uuid.uuid4()}.mp3"
                 tts.save(tts_path)
 
